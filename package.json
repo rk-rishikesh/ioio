@@ -4,6 +4,9 @@
   "version": "1.5.3",
   "author": "J M Rossy",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.7.14",
     "@hyperlane-xyz/hyperlane-token": "^1.5.3",
     "@hyperlane-xyz/sdk": "^1.5.3",
@@ -22,6 +25,7 @@
     "buffer": "^6.0.3",
     "ethers": "^5.7.2",
     "formik": "^2.2.9",
+    "jspdf": "^2.5.1",
     "next": "^13.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
