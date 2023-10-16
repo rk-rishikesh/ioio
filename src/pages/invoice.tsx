@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CryptoJS from 'crypto-js';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useAccount } from 'wagmi';
 
 const secretKey = 'secretKey';
@@ -25,7 +25,7 @@ function Invoice() {
   const [products, setProducts] = useState([{ productName: '', quantity: 0, rate: 0, amount: 0 }]);
   const [currency, setCurrency] = useState('');
   // const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
-  const currencyButtonRef = useRef(null);
+  // const currencyButtonRef = useRef(null);
 
   const { address } = useAccount();
   // console.log(address, isConnected, status);
