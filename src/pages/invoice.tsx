@@ -39,7 +39,7 @@ function Invoice() {
       currency: currency,
     };
 
-    console.log(invoiceDetails);
+    // console.log(invoiceDetails);
 
     const encryptedData = CryptoJS.AES.encrypt(
       JSON.stringify(invoiceDetails),
@@ -48,9 +48,9 @@ function Invoice() {
 
     // Convert the invoice details to a query string
     const queryParams = new URLSearchParams({ data: encryptedData }).toString();
-    console.log(queryParams);
+    // console.log(queryParams);
     const paymentGatewayURL = `http://localhost:3000/Payment?${queryParams}`;
-    console.log(paymentGatewayURL);
+    // console.log(paymentGatewayURL);
     return paymentGatewayURL;
   };
 
@@ -110,7 +110,7 @@ function Invoice() {
     // Render the HTML to a canvas with higher DPI for better quality
     const dpi = 600; // Adjust DPI as needed for improved quality
     const scale = dpi / 96; // The default DPI is 96, so calculate the scale factor
-    var canvas;
+    let canvas;
     if (invoiceHTML != null) {
       canvas = await html2canvas(invoiceHTML, { scale: scale });
     }
@@ -262,7 +262,7 @@ function Invoice() {
               <span className="mr-2">Bill To:</span>
             </div>
             <div className="flex items-center">
-              <span className="mr-2 w-32">Client's Name:</span>
+              <span className="mr-2 w-32">Client&apos; Name:</span>
               <input
                 type="text"
                 className="border rounded p-2"
