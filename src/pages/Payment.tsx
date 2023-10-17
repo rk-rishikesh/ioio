@@ -15,7 +15,7 @@ const secretKey = 'secretKey';
 
 // console.log(decryptedData);
 
-const Payment: NextPage = () => {
+const payment: NextPage = () => {
   const [invoiceDetails, setInvoiceDetails] = useState({
     billerAddress: '',
     clientWalletAddress: '',
@@ -55,4 +55,4 @@ const Payment: NextPage = () => {
   );
 };
 
-export default Payment;
+export default payment;
