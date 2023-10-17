@@ -49,7 +49,7 @@ function Invoice() {
     // Convert the invoice details to a query string
     const queryParams = new URLSearchParams({ data: encryptedData }).toString();
     // console.log(queryParams);
-    const paymentGatewayURL = `https://invoicified.vercel.app/payment?${queryParams}`;
+    const paymentGatewayURL = `https://invoicified.vercel.app/Payment?${queryParams}`;
     // console.log(paymentGatewayURL);
     return paymentGatewayURL;
   };
