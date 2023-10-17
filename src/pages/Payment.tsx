@@ -15,7 +15,7 @@ const secretKey = 'secretKey';
 
 // console.log(decryptedData);
 
-const payment: NextPage = () => {
+const Payment: NextPage = () => {
   const [invoiceDetails, setInvoiceDetails] = useState({
     billerAddress: '',
     clientWalletAddress: '',
@@ -32,7 +32,7 @@ const payment: NextPage = () => {
       // Decrypt the data
       const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
       const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-      console.log('decryptedData', decryptedData);
+      // console.log('decryptedData', decryptedData);
       // Update the state with decrypted data
       setInvoiceDetails({
         billerAddress: decryptedData.billerAddress || '',
@@ -55,4 +55,4 @@ const payment: NextPage = () => {
   );
 };
 
-export default payment;
+export default Payment;
