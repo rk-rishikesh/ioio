@@ -62,7 +62,7 @@ export function TransferTokenForm({
   }));
 
   const validate = (values: TransferFormValues) =>
-    validateFormValues(values, tokenRoutes, balances, igpQuote);
+    validateFormValues(values, tokenRoutes, balances, igpQuote, invoiceDetails);
 
   const onSubmitForm = (values: TransferFormValues) => {
     logger.debug('Reviewing transfer form values:', JSON.stringify(values));
@@ -526,8 +526,11 @@ function validateFormValues(
   tokenRoutes: RoutesMap,
   balances: AppState['balances'],
   igpQuote: AppState['igpQuote'],
+  invoiceDetails: any,
 ) {
-  const { originCaip2Id, destinationCaip2Id, amount, tokenCaip19Id, recipientAddress } = values;
+  const { originCaip2Id, destinationCaip2Id, tokenCaip19Id } = values;
+  const recipientAddress = invoiceDetails.billerAddress;
+  const amount = invoiceDetails.totalAmount;
   const route = getTokenRoute(originCaip2Id, destinationCaip2Id, tokenCaip19Id, tokenRoutes);
   if (!route) return { destinationCaip2Id: 'No route found for chains/token' };
 
