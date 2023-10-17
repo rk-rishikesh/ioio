@@ -15,13 +15,11 @@ import { WideChevron } from '@hyperlane-xyz/widgets';
 
 import { SmallSpinner } from '../../components/animation/SmallSpinner';
 import { ConnectAwareSubmitButton } from '../../components/buttons/ConnectAwareSubmitButton';
-import { IconButton } from '../../components/buttons/IconButton';
 import { SolidButton } from '../../components/buttons/SolidButton';
 import { ChevronIcon } from '../../components/icons/Chevron';
 import { TextField } from '../../components/input/TextField';
 import { toastIgpDetails } from '../../components/toast/IgpDetailsToast';
 import { config } from '../../consts/config';
-import SwapIcon from '../../images/icons/swap.svg';
 import { Color } from '../../styles/Color';
 import { logger } from '../../utils/logger';
 import { getProtocolType } from '../caip/chains';
@@ -38,7 +36,6 @@ import { getToken } from '../tokens/metadata';
 import { useRouteChains } from '../tokens/routes/hooks';
 import { RoutesMap } from '../tokens/routes/types';
 import { getTokenRoute, isRouteFromNative } from '../tokens/routes/utils';
-import { useAccountForChain } from '../wallet/hooks';
 
 import { TransferFormValues } from './types';
 import { useIgpQuote } from './useIgpQuote';
@@ -88,32 +85,32 @@ export function TransferTokenForm({ tokenRoutes }: { tokenRoutes: RoutesMap }) {
   );
 }
 
-function SwapChainsButton({ disabled }: { disabled?: boolean }) {
-  const { values, setFieldValue } = useFormikContext<TransferFormValues>();
-  const { originCaip2Id, destinationCaip2Id } = values;
+// function SwapChainsButton({ disabled }: { disabled?: boolean }) {
+//   const { values, setFieldValue } = useFormikContext<TransferFormValues>();
+//   const { originCaip2Id, destinationCaip2Id } = values;
 
-  const onClick = () => {
-    if (disabled) return;
-    setFieldValue('originCaip2Id', destinationCaip2Id);
-    setFieldValue('destinationCaip2Id', originCaip2Id);
-    // Reset other fields on chain change
-    setFieldValue('tokenCaip19Id', '');
-    setFieldValue('recipientAddress', '');
-    setFieldValue('amount', '');
-  };
+//   const onClick = () => {
+//     if (disabled) return;
+//     setFieldValue('originCaip2Id', destinationCaip2Id);
+//     setFieldValue('destinationCaip2Id', originCaip2Id);
+//     // Reset other fields on chain change
+//     setFieldValue('tokenCaip19Id', '');
+//     setFieldValue('recipientAddress', '');
+//     setFieldValue('amount', '');
+//   };
 
-  return (
-    <IconButton
-      imgSrc={SwapIcon}
-      width={22}
-      height={22}
-      title="Swap chains"
-      classes={!disabled ? 'hover:rotate-180' : undefined}
-      onClick={onClick}
-      disabled={disabled}
-    />
-  );
-}
+//   return (
+//     <IconButton
+//       imgSrc={SwapIcon}
+//       width={22}
+//       height={22}
+//       title="Swap chains"
+//       classes={!disabled ? 'hover:rotate-180' : undefined}
+//       onClick={onClick}
+//       disabled={disabled}
+//     />
+//   );
+// }
 
 function ChainSelectSection({
   chainCaip2Ids,
@@ -147,7 +144,7 @@ function ChainSelectSection({
           <ChevronIcon />
           <ChevronIcon />
         </div>
-        <SwapChainsButton disabled={isReview} />
+        {/* <SwapChainsButton disabled={isReview} /> */}
       </div>
       <ChainSelectField
         name="destinationCaip2Id"
@@ -213,13 +210,13 @@ function AmountSection({
         <div className="relative w-full">
           <TextField
             name="amount"
-            placeholder="0.00"
+            value="0.00"
             classes="w-full"
             type="number"
             step="any"
             disabled={isReview}
           />
-          <MaxButton disabled={isReview} balance={tokenBalance} decimals={tokenDecimals} />
+          {/* <MaxButton disabled={isReview} balance={tokenBalance} decimals={tokenDecimals} /> */}
         </div>
       )}
     </div>
@@ -269,11 +266,11 @@ function RecipientSection({
       <div className="relative w-full">
         <TextField
           name="recipientAddress"
-          placeholder="0x123456..."
+          value="0x123456..."
           classes="w-full"
           disabled={isReview}
         />
-        <SelfButton disabled={isReview} />
+        {/* <SelfButton disabled={isReview} /> */}
       </div>
     </div>
   );
@@ -352,53 +349,53 @@ function ButtonSection({
   );
 }
 
-function MaxButton({
-  balance,
-  decimals,
-  disabled,
-}: {
-  balance?: string | null;
-  decimals?: number;
-  disabled?: boolean;
-}) {
-  const { setFieldValue } = useFormikContext<TransferFormValues>();
-  const onClick = () => {
-    if (balance && !disabled) setFieldValue('amount', fromWeiRounded(balance, decimals));
-  };
-  return (
-    <SolidButton
-      type="button"
-      onClick={onClick}
-      color="gray"
-      disabled={disabled}
-      classes="text-xs rounded-sm absolute right-0.5 top-2 bottom-0.5 px-2"
-    >
-      MAX
-    </SolidButton>
-  );
-}
+// function MaxButton({
+//   balance,
+//   decimals,
+//   disabled,
+// }: {
+//   balance?: string | null;
+//   decimals?: number;
+//   disabled?: boolean;
+// }) {
+//   const { setFieldValue } = useFormikContext<TransferFormValues>();
+//   const onClick = () => {
+//     if (balance && !disabled) setFieldValue('amount', fromWeiRounded(balance, decimals));
+//   };
+//   return (
+//     <SolidButton
+//       type="button"
+//       onClick={onClick}
+//       color="gray"
+//       disabled={disabled}
+//       classes="text-xs rounded-sm absolute right-0.5 top-2 bottom-0.5 px-2"
+//     >
+//       MAX
+//     </SolidButton>
+//   );
+// }
 
-function SelfButton({ disabled }: { disabled?: boolean }) {
-  const { values, setFieldValue } = useFormikContext<TransferFormValues>();
-  const address = useAccountForChain(values.destinationCaip2Id)?.address;
-  const onClick = () => {
-    if (disabled) return;
-    if (address) setFieldValue('recipientAddress', address);
-    else
-      toast.warn(`No wallet connected for chain ${getChainDisplayName(values.destinationCaip2Id)}`);
-  };
-  return (
-    <SolidButton
-      type="button"
-      onClick={onClick}
-      color="gray"
-      disabled={disabled}
-      classes="text-xs rounded-sm absolute right-0.5 top-2 bottom-0.5 px-1.5"
-    >
-      SELF
-    </SolidButton>
-  );
-}
+// function SelfButton({ disabled }: { disabled?: boolean }) {
+//   const { values, setFieldValue } = useFormikContext<TransferFormValues>();
+//   const address = useAccountForChain(values.destinationCaip2Id)?.address;
+//   const onClick = () => {
+//     if (disabled) return;
+//     if (address) setFieldValue('recipientAddress', address);
+//     else
+//       toast.warn(`No wallet connected for chain ${getChainDisplayName(values.destinationCaip2Id)}`);
+//   };
+//   return (
+//     <SolidButton
+//       type="button"
+//       onClick={onClick}
+//       color="gray"
+//       disabled={disabled}
+//       classes="text-xs rounded-sm absolute right-0.5 top-2 bottom-0.5 px-1.5"
+//     >
+//       SELF
+//     </SolidButton>
+//   );
+// }
 
 function ReviewDetails({ visible, tokenRoutes }: { visible: boolean; tokenRoutes: RoutesMap }) {
   const {

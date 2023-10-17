@@ -2,7 +2,6 @@ import Image from 'next/image';
 import { useMemo, useState } from 'react';
 
 import { TokenIcon } from '../../components/icons/TokenIcon';
-import { TextInput } from '../../components/input/TextField';
 import { Modal } from '../../components/layout/Modal';
 import { config } from '../../consts/config';
 import InfoIcon from '../../images/icons/info-circle.svg';
@@ -44,17 +43,25 @@ export function TokenListModal({
   return (
     <Modal
       isOpen={isOpen}
-      title="Select Token"
+      title=""
       close={onClose}
       width="max-w-100 sm:max-w-[31rem] min-h-[24rem]"
     >
-      <TextInput
+      {/* <TextInput
         value={search}
         onChange={setSearch}
         placeholder="Name, symbol, or address"
         name="token-search"
         classes="mt-3 mb-4 sm:py-2.5 w-full"
         autoComplete="off"
+      /> */}
+      <Image
+        src="https://miro.medium.com/v2/resize:fit:1400/1*sasNaSSLL0AHLjCE5E4Onw.png"
+        alt=""
+        width="480"
+        height="300"
+        className="mt-8 mb-16"
+        data-te-toggle="tooltip"
       />
       <TokenList
         originCaip2Id={originCaip2Id}

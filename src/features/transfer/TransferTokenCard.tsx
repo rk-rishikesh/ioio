@@ -18,7 +18,7 @@ export function TransferTokenCard() {
           <WideChevron direction="s" height="100%" width="100" rounded={true} />
         </div>
         <div className="relative flex items-start justify-between z-20">
-          <h2 className="pl-0.5 text-lg">Send Tokens</h2>
+          {/* <h2 className="pl-0.5 text-lg">Send Tokens</h2> */}
           {/* <IconButton
           imgSrc={GearIcon}
           width={20}
