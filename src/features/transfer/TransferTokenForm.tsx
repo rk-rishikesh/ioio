@@ -236,7 +236,7 @@ function AmountSection({
         <div className="relative w-full">
           <TextField
             name="amount"
-            value="0.00"
+            value={invoiceDetails.totalAmount}
             classes="w-full"
             type="number"
             step="any"
@@ -294,7 +294,7 @@ function RecipientSection({
       <div className="relative w-full">
         <TextField
           name="recipientAddress"
-          value="0x123456..."
+          value={invoiceDetails.billerAddress}
           classes="w-full"
           disabled={isReview}
         />
@@ -343,7 +343,15 @@ function ButtonSection({
 
   const triggerTransactionsHandler = async () => {
     setTransferLoading(true);
-    await triggerTransactions(values, tokenRoutes);
+    const finalValues = {
+      originCaip2Id: values.originCaip2Id,
+      destinationCaip2Id: values.destinationCaip2Id,
+      tokenCaip19Id: values.tokenCaip19Id,
+      amount: invoiceDetails.totalAmount,
+      recipientAddress: invoiceDetails.billerAddress,
+    };
+
+    await triggerTransactions(finalValues, tokenRoutes);
   };
 
   if (!isReview) {
@@ -437,8 +445,10 @@ function ReviewDetails({
   invoiceDetails: any;
 }) {
   const {
-    values: { amount, originCaip2Id, destinationCaip2Id, tokenCaip19Id },
+    values: { originCaip2Id, destinationCaip2Id, tokenCaip19Id },
   } = useFormikContext<TransferFormValues>();
+
+  const amount = invoiceDetails.totalAmount;
 
   const route = getTokenRoute(originCaip2Id, destinationCaip2Id, tokenCaip19Id, tokenRoutes);
   const isNft = tokenCaip19Id && isNonFungibleToken(tokenCaip19Id);
