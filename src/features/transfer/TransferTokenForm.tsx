@@ -41,7 +41,13 @@ import { TransferFormValues } from './types';
 import { useIgpQuote } from './useIgpQuote';
 import { useTokenTransfer } from './useTokenTransfer';
 
-export function TransferTokenForm({ tokenRoutes }: { tokenRoutes: RoutesMap }) {
+export function TransferTokenForm({
+  tokenRoutes,
+  invoiceDetails,
+}: {
+  tokenRoutes: RoutesMap;
+  invoiceDetails: any;
+}) {
   const chainCaip2Ids = useRouteChains(tokenRoutes);
   const initialValues = useFormInitialValues(chainCaip2Ids, tokenRoutes);
 
@@ -75,11 +81,29 @@ export function TransferTokenForm({ tokenRoutes }: { tokenRoutes: RoutesMap }) {
         <ChainSelectSection chainCaip2Ids={chainCaip2Ids} isReview={isReview} />
         <div className="mt-3 flex justify-between space-x-4">
           <TokenSection tokenRoutes={tokenRoutes} setIsNft={setIsNft} isReview={isReview} />
-          <AmountSection tokenRoutes={tokenRoutes} isNft={isNft} isReview={isReview} />
+          <AmountSection
+            tokenRoutes={tokenRoutes}
+            isNft={isNft}
+            isReview={isReview}
+            invoiceDetails={invoiceDetails}
+          />
         </div>
-        <RecipientSection tokenRoutes={tokenRoutes} isReview={isReview} />
-        <ReviewDetails visible={isReview} tokenRoutes={tokenRoutes} />
-        <ButtonSection tokenRoutes={tokenRoutes} isReview={isReview} setIsReview={setIsReview} />
+        <RecipientSection
+          tokenRoutes={tokenRoutes}
+          isReview={isReview}
+          invoiceDetails={invoiceDetails}
+        />
+        <ReviewDetails
+          visible={isReview}
+          tokenRoutes={tokenRoutes}
+          invoiceDetails={invoiceDetails}
+        />
+        <ButtonSection
+          tokenRoutes={tokenRoutes}
+          isReview={isReview}
+          setIsReview={setIsReview}
+          invoiceDetails={invoiceDetails}
+        />
       </Form>
     </Formik>
   );
@@ -188,10 +212,12 @@ function AmountSection({
   tokenRoutes,
   isNft,
   isReview,
+  invoiceDetails,
 }: {
   tokenRoutes: RoutesMap;
   isNft: boolean;
   isReview: boolean;
+  invoiceDetails: any;
 }) {
   const { values } = useFormikContext<TransferFormValues>();
   const { tokenBalance, tokenDecimals } = useOriginBalance(values, tokenRoutes);
@@ -226,9 +252,11 @@ function AmountSection({
 function RecipientSection({
   tokenRoutes,
   isReview,
+  invoiceDetails,
 }: {
   tokenRoutes: RoutesMap;
   isReview: boolean;
+  invoiceDetails: any;
 }) {
   const { values } = useFormikContext<TransferFormValues>();
   const { balance, decimals } = useDestinationBalance(values, tokenRoutes);
@@ -293,10 +321,12 @@ function ButtonSection({
   tokenRoutes,
   isReview,
   setIsReview,
+  invoiceDetails,
 }: {
   tokenRoutes: RoutesMap;
   isReview: boolean;
   setIsReview: (b: boolean) => void;
+  invoiceDetails: any;
 }) {
   const { values } = useFormikContext<TransferFormValues>();
 
@@ -397,7 +427,15 @@ function ButtonSection({
 //   );
 // }
 
-function ReviewDetails({ visible, tokenRoutes }: { visible: boolean; tokenRoutes: RoutesMap }) {
+function ReviewDetails({
+  visible,
+  tokenRoutes,
+  invoiceDetails,
+}: {
+  visible: boolean;
+  tokenRoutes: RoutesMap;
+  invoiceDetails: any;
+}) {
   const {
     values: { amount, originCaip2Id, destinationCaip2Id, tokenCaip19Id },
   } = useFormikContext<TransferFormValues>();

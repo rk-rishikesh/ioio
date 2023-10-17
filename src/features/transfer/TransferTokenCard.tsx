@@ -8,7 +8,7 @@ import { useTokenRoutes } from '../tokens/routes/hooks';
 
 import { TransferTokenForm } from './TransferTokenForm';
 
-export function TransferTokenCard() {
+export function TransferTokenCard({ invoiceDetails }: any) {
   const { tokenRoutes, isLoading, error: routesError } = useTokenRoutes();
 
   return (
@@ -27,7 +27,9 @@ export function TransferTokenCard() {
           classes="hover:rotate-90"
         /> */}
         </div>
-        {tokenRoutes && <TransferTokenForm tokenRoutes={tokenRoutes} />}
+        {tokenRoutes && (
+          <TransferTokenForm tokenRoutes={tokenRoutes} invoiceDetails={invoiceDetails} />
+        )}
         {isLoading && (
           <div className="my-24 flex flex-col items-center">
             <Spinner />

@@ -49,7 +49,7 @@ function Invoice() {
     // Convert the invoice details to a query string
     const queryParams = new URLSearchParams({ data: encryptedData }).toString();
     // console.log(queryParams);
-    const paymentGatewayURL = `http://localhost:3000/Payment?${queryParams}`;
+    const paymentGatewayURL = `https://invoicified.vercel.app/payment?${queryParams}`;
     // console.log(paymentGatewayURL);
     return paymentGatewayURL;
   };
@@ -187,7 +187,7 @@ function Invoice() {
   //   setCurrency(newCurrency);
   // };
 
-  const currencyOptions = ['USD', 'EUR', 'GBP', 'JPY'];
+  const currencyOptions = ['Sepolia', 'Goreli'];
 
   // const toggleCurrencyOptions = () => {
   //   setShowCurrencyOptions(!showCurrencyOptions);
@@ -216,7 +216,7 @@ function Invoice() {
         value={currency}
         className="border bg-white rounded-full text-center items-center p-2 w-32 h-10 font-bold mb-8 ml-auto mr-80"
       >
-        <option value="">Currency</option>
+        <option value="">Chain</option>
         {currencyOptions.map((option) => (
           <option key={option} value={option}>
             {option}
