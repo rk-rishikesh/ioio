@@ -2,24 +2,16 @@ import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { toTitleCase } from '@hyperlane-xyz/utils';
-
-import { SmallSpinner } from '../../components/animation/SmallSpinner';
 import { ChainLogo } from '../../components/icons/ChainLogo';
 import { Identicon } from '../../components/icons/Identicon';
-import ArrowRightIcon from '../../images/icons/arrow-right.svg';
 import CollapseIcon from '../../images/icons/collapse-icon.svg';
 import ConfirmedIcon from '../../images/icons/confirmed-icon.svg';
 import DeliveredIcon from '../../images/icons/delivered-icon.svg';
 import Logout from '../../images/icons/logout.svg';
-import ResetIcon from '../../images/icons/reset-icon.svg';
 import WarningIcon from '../../images/icons/transfer-warning-status.svg';
 import Wallet from '../../images/icons/wallet.svg';
 import { tryClipboardSet } from '../../utils/clipboard';
-import { getAssetNamespace } from '../caip/tokens';
-import { getChainDisplayName } from '../chains/utils';
 import { useStore } from '../store';
-import { getToken } from '../tokens/metadata';
 import { TransfersDetailsModal } from '../transfer/TransfersDetailsModal';
 import { TransferContext, TransferStatus } from '../transfer/types';
 
@@ -48,14 +40,18 @@ export function SideBarMenu({
   onConnectWallet,
   isOpen,
   onClose,
+  notifications,
 }: {
   onConnectWallet: () => void;
   isOpen: boolean;
   onClose: () => void;
+  notifications: any;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransfer, setSelectedTransfer] = useState<TransferContext | null>(null);
+  // const [signer, setSigner] = useState(null);
+
   const disconnects = useDisconnectFns();
   const { readyAccounts } = useAccounts();
   const didMountRef = useRef(false);
@@ -145,7 +141,7 @@ export function SideBarMenu({
           <div className="w-full bg-blue-500 py-2 px-3.5 mb-4 text-white text-base font-normal tracking-wider">
             Transfer History
           </div>
-          <div className="flex grow flex-col px-3.5">
+          {/* <div className="flex grow flex-col px-3.5">
             <div className="grow flex flex-col w-full">
               {sortedTransfers?.length > 0 &&
                 sortedTransfers.map((t) => (
@@ -213,6 +209,72 @@ export function SideBarMenu({
                 <span className="text-gray-900 text-sm font-normal">Reset transaction history</span>
               </button>
             )}
+          </div> */}
+          {/* <div className="flex grow flex-col w-full">
+            {notifications.length > 0 &&
+              notifications.map((notification) => (
+                <div
+                  key={notification.sid}
+                  className="flex justify-between items-center rounded-md border border-gray-300 px-2.5 py-2 mb-3 hover-bg-gray-100 active-bg-gray-200 transition-all duration-500"
+                >
+                  
+                  <div className="flex">
+               
+                    <div className="mr-2.5 flex flex-col items-center justify-center rounded-full bg-gray-100 h-[2.25rem] w-[2.25rem] p-1.5">
+                      {notification.icon ? (
+                        <Image src={notification.icon} width={20} height={20} alt="" />
+                      ) : (
+                        <ChainLogo chainCaip2Id={notification.blockchain} size={20} />
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <div className="flex flex-col">
+                        <div className="flex items items-baseline">
+                          <span className="text-gray-800 text-sm font-normal">
+                            {notification.title || ''}
+                          </span>
+                          <button>
+                            <span className="text-gray-800 text-sm font-normal ml-1">
+                              {notification.message || ''}
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div> */}
+          <div className="flex grow flex-col w-full justify-center items-center">
+            {notifications.length > 0 &&
+              notifications.map((notification) => (
+                <div
+                  key={notification.sid}
+                  className="flex flex-col items-center rounded-md border border-gray-300 px-2.5 py-2 mb-3 hover-bg-gray-100 active-bg-gray-200 transition-all duration-500"
+                  style={{ width: '300px' }} // Set a fixed width for the notification container
+                >
+                  <div className="flex flex-col items-center">
+                    <div className="mb-2 mr-2.5 flex flex-col items-center justify-center rounded-full bg-gray-100 h-[2.25rem] w-[2.25rem] p-1.5">
+                      {notification.icon ? (
+                        <Image src={notification.icon} width={30} height={30} alt="" />
+                      ) : (
+                        <ChainLogo chainCaip2Id={notification.blockchain} size={20} />
+                      )}
+                    </div>
+                    <span className="text-gray-800 text-sm font-semibold text-center mb-2">
+                      {' '}
+                      {/* Center-align text */}
+                      {notification.title || 'Title'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => window.open(notification.message, '_blank')}
+                    className="text-white bg-blue-500 hover:bg-blue-600 py-2 px-3 rounded w-full" // Set a fixed width for the button and center-align it
+                  >
+                    Pay Now
+                  </button>
+                </div>
+              ))}
           </div>
         </div>
       </div>

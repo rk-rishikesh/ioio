@@ -4,10 +4,13 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CryptoJS from 'crypto-js';
+import { ethers } from 'ethers';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
+
+import { Notify } from '../blockchain/pushprotocol';
 
 const secretKey = 'secretKey';
 
@@ -24,11 +27,34 @@ function Invoice() {
   const [dueDate, setDueDate] = useState('');
   const [products, setProducts] = useState([{ productName: '', quantity: 0, rate: 0, amount: 0 }]);
   const [currency, setCurrency] = useState('');
+  const [signer, setSigner] = useState(null);
   // const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
   // const currencyButtonRef = useRef(null);
 
   const { address } = useAccount();
   // console.log(address, isConnected, status);
+  useEffect(() => {
+    // Check if MetaMask is installed
+    if (typeof window.ethereum !== 'undefined') {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      // Request access to the user's MetaMask account
+      window.ethereum
+        .request({ method: 'eth_requestAccounts' })
+        .then((accounts) => {
+          // You can now access the signer
+          const selectedAddress = accounts[0];
+          const connectedSigner = provider.getSigner(selectedAddress);
+          console.log('connectedSigner', connectedSigner);
+          setSigner(connectedSigner);
+        })
+        .catch((err) => {
+          console.error('Error connecting to MetaMask:', err);
+        });
+    } else {
+      console.error('MetaMask is not installed');
+    }
+  }, []);
 
   const generatePaymentLink = () => {
     // Construct the payment link based on the invoice details
@@ -141,6 +167,12 @@ function Invoice() {
 
     // Save the PDF or open it in a new tab
     pdf.save('invoice.pdf');
+    const sendNoti = await Notify(
+      clientWalletAddress,
+      `Invoice Received form ${companyName}!`,
+      paymentLink,
+    );
+    console.log('sent', sendNoti);
   };
 
   const handleProductChange = (index, field, value) => {
@@ -187,7 +219,7 @@ function Invoice() {
   //   setCurrency(newCurrency);
   // };
 
-  const currencyOptions = ['Sepolia', 'Goreli'];
+  const currencyOptions = ['Sepolia', 'Goerli'];
 
   // const toggleCurrencyOptions = () => {
   //   setShowCurrencyOptions(!showCurrencyOptions);

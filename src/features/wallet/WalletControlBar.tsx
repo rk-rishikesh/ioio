@@ -1,8 +1,10 @@
+import { ethers } from 'ethers';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { shortenAddress } from '@hyperlane-xyz/utils';
 
+import { getNotifications } from '../../blockchain/pushprotocol';
 import { SolidButton } from '../../components/buttons/SolidButton';
 import { Identicon } from '../../components/icons/Identicon';
 import Wallet from '../../images/icons/wallet.svg';
@@ -15,11 +17,44 @@ import { useAccounts } from './hooks';
 export function WalletControlBar() {
   const [showEnvSelectModal, setShowEnvSelectModal] = useState(false);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-
+  const [signer, setSigner] = useState(null);
+  const [notifications, setNotifications] = useState([]);
   const { readyAccounts } = useAccounts();
   const isSsr = useIsSsr();
 
   const numReady = readyAccounts.length;
+
+  useEffect(() => {
+    // Check if MetaMask is installed
+    if (typeof window.ethereum !== 'undefined') {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      // Request access to the user's MetaMask account
+      window.ethereum
+        .request({ method: 'eth_requestAccounts' })
+        .then((accounts) => {
+          // You can now access the signer
+          const selectedAddress = accounts[0];
+          const connectedSigner = provider.getSigner(selectedAddress);
+          console.log('connectedSigner', connectedSigner);
+          setSigner(connectedSigner);
+        })
+        .catch((err) => {
+          console.error('Error connecting to MetaMask:', err);
+        });
+    } else {
+      console.error('MetaMask is not installed');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (signer) {
+      getNotifications(signer).then((data) => {
+        console.log(data);
+        setNotifications(data);
+      });
+    }
+  }, [getNotifications, signer]);
 
   if (isSsr) {
     // https://github.com/wagmi-dev/wagmi/issues/542#issuecomment-1144178142
@@ -87,6 +122,7 @@ export function WalletControlBar() {
           onClose={() => setIsSideBarOpen(false)}
           isOpen={isSideBarOpen}
           onConnectWallet={() => setShowEnvSelectModal(true)}
+          notifications={notifications}
         />
       )}
     </div>
