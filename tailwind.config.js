@@ -15,7 +15,22 @@ module.exports = {
       ...defaultTheme.screens,
     },
     extend: {
+      fontFamily: {
+        palanquin: ["Palanquin", "sans-serif"],
+        montserrat: ["Montserrat", "sans-serif"],
+      },
       colors: {
+        primary: "#ECEEFF",
+        
+      },
+      boxShadow: {
+        "3xl": "0 10px 40px rgba(0, 0, 0, 0.1)",
+      },
+      colors: {
+        "coral-red": "#FF6452",
+        "slate-gray": "#6D6D6D",
+        "pale-blue": "#F5F6FF",
+        "white-400": "rgba(255, 255, 255, 0.80)",
         black: '#010101',
         white: '#ffffff',
         gray: {...defaultTheme.colors.gray, 150: '#EBEDF0', 250: '#404040', 350: '#6B6B6B'},

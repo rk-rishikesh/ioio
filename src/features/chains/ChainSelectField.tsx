@@ -38,18 +38,18 @@ export function ChainSelectField({ name, label, chainCaip2Ids, onChange, disable
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-col items-center justify-center rounded-full bg-gray-100 h-[5.5rem] w-[5.5rem] p-1.5">
+      {/* <div className="flex flex-col items-center justify-center rounded-full bg-gray-100 h-[5.5rem] w-[5.5rem] p-1.5">
         <div className="flex items-end h-11">
           <ChainLogo chainCaip2Id={field.value} size={34} />
         </div>
         <label htmlFor={name} className="mt-2 mb-1 text-sm text-gray-500 uppercase">
           {label}
         </label>
-      </div>
+      </div> */}
       <button
         type="button"
         name={field.name}
-        className={`${styles.base} ${disabled ? styles.disabled : styles.enabled}`}
+        className={`mt-8 ${styles.base} ${disabled ? styles.disabled : styles.enabled}`}
         onClick={onClick}
       >
         <div className="flex items-center">

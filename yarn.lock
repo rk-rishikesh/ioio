@@ -47,6 +47,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@async-generators/from-emitter@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@async-generators/from-emitter@npm:0.3.0"
+  dependencies:
+    "@async-generators/subject": ^0.4
+    "@async-generators/terminator": ^0.4
+  checksum: 026ee763b8d2b20b6f5e312427fac6d2e3f0c9c9313bbd96042973b253b46bede3d397860608e1819fbc7b394ef74be65b6076b8ee6076d7e85b5bc1d28d376b
+  languageName: node
+  linkType: hard
+
+"@async-generators/subject@npm:^0.4":
+  version: 0.4.0
+  resolution: "@async-generators/subject@npm:0.4.0"
+  dependencies:
+    "@async-generators/terminator": ^0.4.0
+    events: ^1.1.1
+  checksum: 67156b4fa697f56749930a7d12d0cbd91d088d7cbac532e37cc62955441783543fd53a2a1e28ee406d75d0736a9f89bc772629d4d563e1a15ca8b5e7c328bc80
+  languageName: node
+  linkType: hard
+
+"@async-generators/terminator@npm:^0.4, @async-generators/terminator@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@async-generators/terminator@npm:0.4.0"
+  checksum: 957f92801a29b1df04ceec12c02dff5661c33d97be30cac17ad06e6aac70f3d36c624ddc4e49231fa493377946204bdd33c232a8c4b40dd91b3aff0b87638d26
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.22.10, @babel/code-frame@npm:^7.22.5":
   version: 7.22.10
   resolution: "@babel/code-frame@npm:7.22.10"
@@ -1463,6 +1490,7 @@ __metadata:
     "@solana/wallet-adapter-react-ui": ^0.9.31
     "@solana/wallet-adapter-wallets": ^0.19.16
     "@solana/web3.js": ^1.77.0
+    "@tableland/sdk": ^4.5.3-dev.0
     "@tanstack/react-query": ^4.29.7
     "@trivago/prettier-plugin-sort-imports": ^4.1.1
     "@types/jest": ^29.5.3
@@ -2432,6 +2460,13 @@ __metadata:
   version: 4.8.0
   resolution: "@openzeppelin/contracts-upgradeable@npm:4.8.0"
   checksum: c39f3a719830c068d0ae413a8beee4072fa19f777b55bf6155fe21023414eab0633a641318845ac50929837b71848de1efbd00d4c181ddd6d8b735ceb0a82070
+  languageName: node
+  linkType: hard
+
+"@openzeppelin/contracts@npm:4.8.3":
+  version: 4.8.3
+  resolution: "@openzeppelin/contracts@npm:4.8.3"
+  checksum: aea130d38d46840c5cbe3adbaa9a7ac645e4bd66ad3f3baf2fa78588c408d1a686170b3408c9e2e5e05530fba22ecdc00d7efb6b27852a8b29f91accbc0af255
   languageName: node
   linkType: hard
 
@@ -3782,6 +3817,34 @@ __metadata:
   dependencies:
     tslib: ^2.4.0
   checksum: 273fd3f3fc461a92f3790cc551ea054745c6d6959afbe1232e6d7aa1c722bbc114d308aab96bef5c78fc0303c85c7b472ef00e2253251cc89737f3b1af56e5a5
+  languageName: node
+  linkType: hard
+
+"@tableland/evm@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "@tableland/evm@npm:4.3.0"
+  dependencies:
+    "@openzeppelin/contracts": 4.8.3
+  checksum: 59c837e88ffde21c1031b2e6262ba69f2e8cdb5682ba966128dbd2c19c57ea1f10f13277556c3b79eb4c29abc4f98343805840abb40073b452cf860a146c76b5
+  languageName: node
+  linkType: hard
+
+"@tableland/sdk@npm:^4.5.3-dev.0":
+  version: 4.5.3-dev.0
+  resolution: "@tableland/sdk@npm:4.5.3-dev.0"
+  dependencies:
+    "@async-generators/from-emitter": ^0.3.0
+    "@tableland/evm": ^4.3.0
+    "@tableland/sqlparser": ^1.3.0
+    ethers: ^5.7.2
+  checksum: dcacd3c85684813de2e4885ac2541596858a952f369e51c9ad9651ffc27b694a6da15a359abef18392f63cce434bf33fb874c689018af0ae93ae1f68c6f12ea7
+  languageName: node
+  linkType: hard
+
+"@tableland/sqlparser@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@tableland/sqlparser@npm:1.3.0"
+  checksum: a6360687bb37f57b2c5750d2275aa89060e0288bf3a5586d8ccc50f6cbc3d98d678289c570b6b35c41c12898d1acce920f6db1bf120681c2040022289a1fe1a4
   languageName: node
   linkType: hard
 
@@ -8015,6 +8078,13 @@ __metadata:
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
   checksum: 1875311c42fcfe9c707b2712c32664a245629b42bb0a5a84439762dd0fd637fc54d078155ea83c2af9e0323c9ac13687e03cfba79b03af9f40c89b4960099374
+  languageName: node
+  linkType: hard
+
+"events@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "events@npm:1.1.1"
+  checksum: 40431eb005cc4c57861b93d44c2981a49e7feb99df84cf551baed299ceea4444edf7744733f6a6667e942af687359b1f4a87ec1ec4f21d5127dac48a782039b9
   languageName: node
   linkType: hard
 

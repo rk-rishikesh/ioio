@@ -1,5 +1,8 @@
+import { Database } from '@tableland/sdk';
 import BigNumber from 'bignumber.js';
+import { Wallet, getDefaultProvider } from 'ethers';
 import { Form, Formik, useFormikContext } from 'formik';
+import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -41,6 +44,71 @@ import { TransferFormValues } from './types';
 import { useIgpQuote } from './useIgpQuote';
 import { useTokenTransfer } from './useTokenTransfer';
 
+interface TableData {
+  tokenid: number;
+  tokenvalue: number;
+}
+
+async function read() {
+  try {
+    const privateKey = '59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
+    const wallet = new Wallet(privateKey);
+    // To avoid connecting to the browser wallet (locally, port 8545).
+    // For example: "https://polygon-mumbai.g.alchemy.com/v2/YOUR_ALCHEMY_KEY"
+    const provider = getDefaultProvider(
+      'https://polygon-mumbai.g.alchemy.com/v2/YLn2OY6C8bmGyCuiBSMahWkGW0T0sTf6',
+    );
+    const signer = wallet.connect(provider);
+
+    const db = new Database({ signer });
+    const tableName = 'tokendata_80001_8072';
+
+    if (tableName !== undefined) {
+      const { results } = await db.prepare(`SELECT * FROM ${tableName}`).all<TableData>();
+      console.log(`Read data from table '${tableName}':`);
+      console.log(results[1].tokenvalue);
+      return results[1].tokenvalue;
+    }
+  } catch (err: any) {
+    console.error(err.message);
+  }
+}
+
+async function write() {
+  const currBalance = await read();
+
+  try {
+    const privateKey = 'b08bde2f2c0b15cb34bf98487f252eec9a3c0852dcb4ae170123594372a25259';
+    const wallet = new Wallet(privateKey);
+    // To avoid connecting to the browser wallet (locally, port 8545).
+    // For example: "https://polygon-mumbai.g.alchemy.com/v2/YOUR_ALCHEMY_KEY"
+    const provider = getDefaultProvider(
+      'https://polygon-mumbai.g.alchemy.com/v2/YLn2OY6C8bmGyCuiBSMahWkGW0T0sTf6',
+    );
+    const signer = wallet.connect(provider);
+
+    const db = new Database({ signer });
+    const tableName = 'tokendata_80001_8072';
+    if (tableName !== undefined) {
+      const id = 0;
+      let val = 0;
+      if (currBalance != undefined) {
+        val = currBalance - 1;
+      }
+
+      console.log(val);
+      const { meta: write } = await db
+        .prepare(`UPDATE ${tableName} SET tokenValue = ${val} WHERE tokenID = ${id}`)
+        .bind()
+        .run();
+      await write.txn?.wait();
+      console.log(`Successfully wrote data to table '${tableName}'`);
+    }
+  } catch (err: any) {
+    console.error(err.message);
+  }
+}
+
 export function TransferTokenForm({
   tokenRoutes,
   invoiceDetails,
@@ -55,6 +123,8 @@ export function TransferTokenForm({
   const [isReview, setIsReview] = useState(false);
   // Flag for check current type of token
   const [isNft, setIsNft] = useState(false);
+
+  const [finalAmount, setFinalAmount] = useState(invoiceDetails.totalAmount);
 
   const { balances, igpQuote } = useStore((state) => ({
     balances: state.balances,
@@ -88,6 +158,38 @@ export function TransferTokenForm({
             invoiceDetails={invoiceDetails}
           />
         </div>
+
+        <div className="mt-1.5 px-2.5 py-2 space-y-2 rounded border border-gray-400 bg-gray-150 text-sm break-all">
+          <div className="flex flex-row">
+            <a
+              className="pr-8"
+              target="_blank"
+              href="http://localhost:3000/0x26727ed4f5ba61d3772d1575bca011ae3aef5d36/1/1"
+            >
+              <Image
+                src="https://s3.amazonaws.com/ionic-marketplace/cordova-plugin-scratch/icon.jpg"
+                width={100}
+                height={100}
+                alt="coupon"
+              />
+            </a>
+            <div className="pl-8 mt-1.5 ml-1.5 pl-2 border-l border-gray-300 space-y-1.5 text-xs">
+              <div className={'h-full'}>
+                <p className="text-center text-sm text-gray-500 mb-6">
+                  Welcome Bonus : Your highway to Rewards
+                </p>
+                <div
+                  onClick={() => write()}
+                  className="border-black bg-black flex justify-center items-center gap-2 px-6 py-2 border font-montserrat text-lg leading-none rounded-full  text-white  w-full"
+                >
+                  <p className="text-center text-sm text-white-500">
+                    Apply this coupon and save $ 1
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <RecipientSection
           tokenRoutes={tokenRoutes}
           isReview={isReview}
@@ -103,38 +205,12 @@ export function TransferTokenForm({
           isReview={isReview}
           setIsReview={setIsReview}
           invoiceDetails={invoiceDetails}
+          finalAmount={finalAmount}
         />
       </Form>
     </Formik>
   );
 }
-
-// function SwapChainsButton({ disabled }: { disabled?: boolean }) {
-//   const { values, setFieldValue } = useFormikContext<TransferFormValues>();
-//   const { originCaip2Id, destinationCaip2Id } = values;
-
-//   const onClick = () => {
-//     if (disabled) return;
-//     setFieldValue('originCaip2Id', destinationCaip2Id);
-//     setFieldValue('destinationCaip2Id', originCaip2Id);
-//     // Reset other fields on chain change
-//     setFieldValue('tokenCaip19Id', '');
-//     setFieldValue('recipientAddress', '');
-//     setFieldValue('amount', '');
-//   };
-
-//   return (
-//     <IconButton
-//       imgSrc={SwapIcon}
-//       width={22}
-//       height={22}
-//       title="Swap chains"
-//       classes={!disabled ? 'hover:rotate-180' : undefined}
-//       onClick={onClick}
-//       disabled={disabled}
-//     />
-//   );
-// }
 
 function ChainSelectSection({
   chainCaip2Ids,
@@ -162,7 +238,7 @@ function ChainSelectSection({
         chainCaip2Ids={chainCaip2Ids}
         disabled={isReview}
       />
-      <div className="flex flex-col items-center">
+      <div className="mt-10 flex flex-col items-center">
         <div className="flex mb-6 sm:space-x-1.5">
           <ChevronIcon classes="hidden sm:block" />
           <ChevronIcon />
@@ -322,11 +398,13 @@ function ButtonSection({
   isReview,
   setIsReview,
   invoiceDetails,
+  finalAmount,
 }: {
   tokenRoutes: RoutesMap;
   isReview: boolean;
   setIsReview: (b: boolean) => void;
   invoiceDetails: any;
+  finalAmount: any;
 }) {
   const { values } = useFormikContext<TransferFormValues>();
 
@@ -347,7 +425,7 @@ function ButtonSection({
       originCaip2Id: values.originCaip2Id,
       destinationCaip2Id: values.destinationCaip2Id,
       tokenCaip19Id: values.tokenCaip19Id,
-      amount: invoiceDetails.totalAmount,
+      amount: finalAmount,
       recipientAddress: invoiceDetails.billerAddress,
     };
 

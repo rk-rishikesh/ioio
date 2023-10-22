@@ -125,7 +125,7 @@ export function TokenList({
             } transition-all duration-250`}
             key={t.tokenCaip19Id}
             type="button"
-            disabled={t.disabled}
+            disabled={false}
             onClick={() => onSelect(t)}
           >
             <div className="flex items-center">

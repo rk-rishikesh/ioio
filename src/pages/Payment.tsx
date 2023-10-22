@@ -43,8 +43,6 @@ const Payment: NextPage = () => {
     }
   }, []);
 
-  // console.log('invoiceDetails', invoiceDetails);
-
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="space-y-2">
