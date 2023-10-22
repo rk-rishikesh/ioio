@@ -1,7 +1,7 @@
 const isDevMode = process?.env?.NODE_ENV === 'development';
 const version = process?.env?.NEXT_PUBLIC_VERSION ?? null;
 const explorerApiKeys = JSON.parse(process?.env?.EXPLORER_API_KEYS || '{}');
-const walletConnectProjectId = process?.env?.NEXT_PUBLIC_WALLET_CONNECT_ID || '';
+const walletConnectProjectId = '3b549e7fb77ee16b6f4fef2f25694fb4';
 const withdrawalWhitelist = process?.env?.NEXT_PUBLIC_BLOCK_WITHDRAWAL_WHITELIST || '';
 const transferBlacklist = process?.env?.NEXT_PUBLIC_TRANSFER_BLACKLIST || '';
 
