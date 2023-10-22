@@ -245,7 +245,7 @@ export function SideBarMenu({
                 </div>
               ))}
           </div> */}
-          <div className="flex grow flex-col w-full justify-center items-center">
+          <div className="flex grow flex-col w-full items-center">
             {notifications.length > 0 &&
               notifications.map((notification) => (
                 <div

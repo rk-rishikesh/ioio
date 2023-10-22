@@ -8,10 +8,12 @@ import { ethers } from 'ethers';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAccount } from 'wagmi';
 
+import Loading from '../../public/Loading.gif';
 import { Notify } from '../blockchain/pushprotocol';
+import { ABI, DIAMOND, GOLD, SILVER } from '../consts/contract';
 
 const secretKey = 'secretKey';
 
@@ -28,34 +30,55 @@ function Invoice() {
   const [dueDate, setDueDate] = useState('');
   const [products, setProducts] = useState([{ productName: '', quantity: 0, rate: 0, amount: 0 }]);
   const [currency, setCurrency] = useState('');
-  const [signer, setSigner] = useState(null);
-  // const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
-  // const currencyButtonRef = useRef(null);
+  const [diamondLoading, setDiamondLoading] = useState(false);
+  const [goldLoading, setGoldLoading] = useState(false);
+  const [silverLoading, setSilverLoading] = useState(false);
 
+  const [showInvoice, setShowInvoice] = useState(false);
   const { address } = useAccount();
-  // console.log(address, isConnected, status);
-  useEffect(() => {
-    // Check if MetaMask is installed
-    if (typeof window.ethereum !== 'undefined') {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-      // Request access to the user's MetaMask account
-      window.ethereum
-        .request({ method: 'eth_requestAccounts' })
-        .then((accounts) => {
-          // You can now access the signer
-          const selectedAddress = accounts[0];
-          const connectedSigner = provider.getSigner(selectedAddress);
-          console.log('connectedSigner', connectedSigner);
-          setSigner(connectedSigner);
-        })
-        .catch((err) => {
-          console.error('Error connecting to MetaMask:', err);
-        });
-    } else {
-      console.error('MetaMask is not installed');
+  async function mintNFT(NFTname) {
+    if (NFTname === DIAMOND) {
+      setDiamondLoading(true);
+    } else if (NFTname === GOLD) {
+      setGoldLoading(true);
+    } else if (NFTname === SILVER) {
+      setSilverLoading(true);
     }
-  }, []);
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const signer = provider.getSigner();
+    console.log('signer', signer);
+    const contractABI = ABI;
+    const contractAddress = NFTname;
+
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+    try {
+      console.log('Minting NFT...');
+      const tx = await contract.safeMint();
+      await tx.wait();
+      console.log('NFT minted!, tx:', tx);
+      if (NFTname === DIAMOND) {
+        setDiamondLoading(false);
+      } else if (NFTname === GOLD) {
+        setGoldLoading(false);
+      } else if (NFTname === SILVER) {
+        setSilverLoading(false);
+      }
+      setShowInvoice(true);
+    } catch (err) {
+      console.error(err);
+      if (NFTname === DIAMOND) {
+        setDiamondLoading(false);
+      } else if (NFTname === GOLD) {
+        setGoldLoading(false);
+      } else if (NFTname === SILVER) {
+        setSilverLoading(false);
+      }
+    }
+  }
 
   const generatePaymentLink = () => {
     // Construct the payment link based on the invoice details
@@ -80,49 +103,6 @@ function Invoice() {
     // console.log(paymentGatewayURL);
     return paymentGatewayURL;
   };
-
-  // const generatePDF = async () => {
-  //   // Create a new jsPDF instance with landscape orientation
-  //   const pdf = new jsPDF('l', 'pt', 'a4');
-
-  //   // Generate payment link
-  //   const paymentLink = generatePaymentLink();
-
-  //   // Convert the component to HTML
-  //   const invoiceHTML = document.getElementById('report');
-
-  //   // Render the HTML to a canvas with higher DPI
-  //   const dpi = 300; // Adjust DPI as needed for your desired quality
-  //   const scale = dpi / 96; // The default DPI is 96, so calculate the scale factor
-  //   const canvas = await html2canvas(invoiceHTML, { scale: scale });
-
-  //   // Convert the canvas to an image
-  //   const imgData = canvas.toDataURL('image/jpeg', 1.0);
-
-  //   // Add the image to the PDF
-  //   pdf.addImage(imgData, 'JPEG', 0, 0, 842, 595); // Use landscape A4 paper dimensions
-
-  //   // Position the "Click to Pay" button at the bottom right corner with margin
-  //   const text = 'Pay Now!';
-  //   const textWidth = pdf.getStringUnitWidth(text) * 16; // Adjust the font size as needed
-  //   const rightX = pdf.internal.pageSize.width - 20 - textWidth; // Adjust the horizontal position to place it at the right with margin
-  //   const bottomY = pdf.internal.pageSize.height - 70; // Adjust the vertical position to place it at the bottom with margin
-
-  //   // Add a rectangle as a background for the button
-  //   pdf.setFillColor(51, 122, 183); // MUI primary color as background color
-  //   pdf.rect(rightX - 5, bottomY - 5, textWidth + 10, 30, 'F'); // 'F' indicates to fill the rectangle
-
-  //   // Set the text color to white for better visibility
-  //   pdf.setTextColor(255, 255, 255);
-
-  //   // Add the payment link as a clickable button
-  //   pdf.text(text, rightX, bottomY + 20).setFontSize(16);
-
-  //   pdf.link(rightX - 5, bottomY - 5, textWidth + 10, 30, { url: paymentLink });
-
-  //   // Save the PDF or open it in a new tab
-  //   pdf.save('invoice.pdf');
-  // };
 
   const generatePDF = async () => {
     // Create a new jsPDF instance with landscape orientation and larger height
@@ -202,49 +182,11 @@ function Invoice() {
     return products.reduce((total, product) => total + product.amount, 0);
   };
 
-  // Function to handle logo file input
-  // const handleLogoInputChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = (e) => {
-  //       if (e.target != null) {
-  //         setLogoImage(e.target.result);
-  //       }
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-
-  // const changeCurrency = (newCurrency) => {
-  //   setCurrency(newCurrency);
-  // };
-
   const currencyOptions = ['Sepolia', 'Goerli'];
-
-  // const toggleCurrencyOptions = () => {
-  //   setShowCurrencyOptions(!showCurrencyOptions);
-  // };
-
-  // useEffect(() => {
-  //   // const handleOutsideClick = (event: any) => {
-  //   //   if (currencyButtonRef.current) {
-  //   //     if (currencyButtonRef.current) {
-  //   //       setShowCurrencyOptions(false);
-  //   //     }
-  //   //   }
-  //   // };
-
-  //   window.addEventListener('mousedown', handleOutsideClick);
-
-  //   return () => {
-  //     window.removeEventListener('mousedown', handleOutsideClick);
-  //   };
-  // }, []);
 
   return (
     <>
-      {false && (
+      {showInvoice && (
         <div className="min-h-screen bg-gradient-to-b from-[#A3CEF1] to-white flex flex-col justify-center items-center p-8 pt-28">
           <select
             onChange={(e) => setCurrency(e.target.value)}
@@ -262,23 +204,6 @@ function Invoice() {
           <div className="bg-white rounded-lg shadow-md py-16 space-y-4" id="report">
             <div className="flex justify-between px-16">
               <div className="flex flex-col space-y-4">
-                {/* <label
-              htmlFor="logoInput"
-              className="border rounded flex items-center justify-center p-2 h-20 w-36 cursor-pointer text-center"
-            >
-              {logoImage ? (
-                <img src={logoImage} alt="Logo" className="object-contain" />
-              ) : (
-                <div className="font-frank text-gray-400">Add your logo</div>
-              )}
-            </label>
-            <input
-              type="file"
-              id="logoInput"
-              accept="image/*"
-              className="hidden"
-              onChange={handleLogoInputChange}
-            /> */}
                 <input
                   type="text"
                   placeholder="Enter company's name"
@@ -425,7 +350,7 @@ function Invoice() {
         </div>
       )}
 
-      {true && (
+      {!showInvoice && (
         <>
           <section className="max-container flex justify-center flex-wrap gap-9">
             <div className="min-h-screen flex flex-row justify-center items-center p-8 pt-28 gap-8 ">
@@ -456,10 +381,14 @@ function Invoice() {
                       >
                         <div className="flex max-sm:justify-end items-center max-sm:w-full">
                           <button
+                            onClick={() => mintNFT(DIAMOND)}
                             className={`flex justify-center items-center gap-2 px-7 py-4 border font-montserrat text-lg leading-none rounded-full
-                                      bg-coral-red text-white  w-full`}
+                                      bg-coral-red text-white border-black w-full`}
                           >
-                            BUY
+                            {diamondLoading && (
+                              <Image src={Loading} alt="" width={15} height={15} />
+                            )}
+                            {!diamondLoading && <div>BUY</div>}
                             {/* {iconUrl && (
                           <img src={iconUrl} alt="Icon" className="ml-2 rounded-full w-5 h-5" />
                         )} */}
@@ -498,10 +427,12 @@ function Invoice() {
                       >
                         <div className="flex max-sm:justify-end items-center max-sm:w-full">
                           <button
+                            onClick={() => mintNFT(GOLD)}
                             className={`flex justify-center items-center gap-2 px-7 py-4 border font-montserrat text-lg leading-none rounded-full
-                                      bg-coral-red text-white  w-full`}
+                                      bg-coral-red text-white border-black w-full`}
                           >
-                            BUY
+                            {goldLoading && <Image src={Loading} alt="" width={15} height={15} />}
+                            {!goldLoading && <div>BUY</div>}
                             {/* {iconUrl && (
                           <img src={iconUrl} alt="Icon" className="ml-2 rounded-full w-5 h-5" />
                         )} */}
@@ -513,10 +444,10 @@ function Invoice() {
                 </div>
               </div>
 
-              <div className="flex-1 justify-center align-center sm:w-[350px] sm:min-w-[350px] w-full rounded-[20px] shadow-3xl px-10 py-8">
+              <div className="flex-1  justify-center align-center sm:w-[350px] sm:min-w-[350px] w-full rounded-[20px] shadow-3xl px-10 py-8  ">
                 {/* <div className="w-11 h-11 justify-center items-center bg-coral-red rounded-full"> */}
 
-                <div className="p-3  mt-2 text-center space-x-4 md:block">
+                <div className="p-3 mt-2 text-center space-x-4 md:block ">
                   <div className="self-center">
                     <Image
                       src="https://bafybeicuxep4ytv3s5kuir5aoohfdk3wgxxj3b5rvou35fojxdtlsv4viu.ipfs.nftstorage.link/"
@@ -540,10 +471,12 @@ function Invoice() {
                       >
                         <div className="flex max-sm:justify-end items-center max-sm:w-full">
                           <button
+                            onClick={() => mintNFT(SILVER)}
                             className={`flex justify-center items-center gap-2 px-7 py-4 border font-montserrat text-lg leading-none rounded-full
-                                      bg-coral-red text-white  w-full`}
+                                      bg-coral-red text-white border-black w-full`}
                           >
-                            BUY
+                            {silverLoading && <Image src={Loading} alt="" width={15} height={15} />}
+                            {!silverLoading && <div>BUY</div>}
                             {/* {iconUrl && (
                           <img src={iconUrl} alt="Icon" className="ml-2 rounded-full w-5 h-5" />
                         )} */}

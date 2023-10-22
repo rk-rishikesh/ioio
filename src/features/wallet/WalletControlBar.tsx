@@ -1,6 +1,6 @@
-import { ethers } from 'ethers';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useSigner } from 'wagmi';
 
 import { shortenAddress } from '@hyperlane-xyz/utils';
 
@@ -17,44 +17,55 @@ import { useAccounts } from './hooks';
 export function WalletControlBar() {
   const [showEnvSelectModal, setShowEnvSelectModal] = useState(false);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
-  const [signer, setSigner] = useState(null);
+  // const [signer, setSigner] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const { readyAccounts } = useAccounts();
   const isSsr = useIsSsr();
 
+  const { data: _signer, isError, isLoading } = useSigner();
+  console.log('WAGMI signer', _signer);
+
   const numReady = readyAccounts.length;
 
-  useEffect(() => {
-    // Check if MetaMask is installed
-    if (typeof window.ethereum !== 'undefined') {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+  // useEffect(() => {
+  //   // Check if MetaMask is installed
+  //   if (typeof window.ethereum !== 'undefined') {
+  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-      // Request access to the user's MetaMask account
-      window.ethereum
-        .request({ method: 'eth_requestAccounts' })
-        .then((accounts) => {
-          // You can now access the signer
-          const selectedAddress = accounts[0];
-          const connectedSigner = provider.getSigner(selectedAddress);
-          console.log('connectedSigner', connectedSigner);
-          setSigner(connectedSigner);
-        })
-        .catch((err) => {
-          console.error('Error connecting to MetaMask:', err);
-        });
-    } else {
-      console.error('MetaMask is not installed');
-    }
-  }, []);
+  //     // Request access to the user's MetaMask account
+  //     window.ethereum
+  //       .request({ method: 'eth_requestAccounts' })
+  //       .then((accounts) => {
+  //         // You can now access the signer
+  //         const selectedAddress = accounts[0];
+  //         const connectedSigner = provider.getSigner(selectedAddress);
+  //         console.log('connectedSigner', connectedSigner);
+  //         setSigner(connectedSigner);
+  //       })
+  //       .catch((err) => {
+  //         console.error('Error connecting to MetaMask:', err);
+  //       });
+  //   } else {
+  //     console.error('MetaMask is not installed');
+  //   }
+  // }, []);
 
+  // useEffect(() => {
+  //   if (signer) {
+  //     getNotifications(signer).then((data) => {
+  //       console.log(data);
+  //       setNotifications(data);
+  //     });
+  //   }
+  // }, [getNotifications, signer]);
   useEffect(() => {
-    if (signer) {
-      getNotifications(signer).then((data) => {
+    if (_signer) {
+      getNotifications(_signer).then((data) => {
         console.log(data);
         setNotifications(data);
       });
     }
-  }, [getNotifications, signer]);
+  }, [getNotifications, _signer]);
 
   if (isSsr) {
     // https://github.com/wagmi-dev/wagmi/issues/542#issuecomment-1144178142
