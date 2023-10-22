@@ -16,6 +16,6 @@ These contracts are deployed on Scroll Sepolia network.
 3. Polygon: Polygon leads the way in NFT rewards and loyalty, partnering with Starbucks and Flipkart. Now with Invoicfy, we present dynamic NFTs as coupons providing a new usecase of dynamic NFTs as coupons which is deployed on Polygon as well.
 NFT Link: https://testnets.opensea.io/assets/mumbai/0x211d9d7b23f36f68fedf616a9d80d4a50d166715/0
 
-4. Tableland: Tableland is used to handle the dynamic values of dynamic discount coupon NFTs. SQL queries are executed to update and maintain coupon values as clients utilize them.
+4. Tableland: Tableland is used to handle the dynamic values of dynamic discount coupon NFTs. SQL queries are executed to update and maintain coupon values as clients utilize them. The dynamic NFT Repository can be found here: https://github.com/rk-rishikesh/scratchcard/tree/main
 
 5. Push Protocol: Invoicify leverages push notifications for instant delivery of invoices to clients. This feature simplifies communication and expedites the payment process.
